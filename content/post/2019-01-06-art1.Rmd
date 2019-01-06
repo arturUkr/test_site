@@ -1,0 +1,13 @@
+---
+title: art1
+author: artur
+date: '2019-01-06'
+slug: art1
+categories:
+  - R
+tags:
+  - regression
+---
+
+
+Привіт. мій перший пост
