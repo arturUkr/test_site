@@ -1,0 +1,10 @@
+---
+title: art2
+author: artur
+date: '2019-01-06'
+slug: art2
+categories:
+  - R
+tags:
+  - plot
+---
