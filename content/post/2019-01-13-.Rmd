@@ -145,19 +145,13 @@ J(w) = \frac{1}{2m} \sum_{i = 1}^{m}e_i^2
 $$
 
 Для зручності запишемо функцію втрат у векторній формі, яка, як показано далі, еквівадентна попередньому виразу:
-$$
-J(w) = \frac{1}{2m} e^{T}e =                                     
-     = 
+$$J(w) = \frac{1}{2m} e^{T}e =                                     
   \frac{1}{2m}
   \begin{bmatrix} e_1 & e_2 & \cdots & e_m \end{bmatrix}
-  \begin{bmatrix} e_1 \\ e_2 \\ \cdots \\ e_m \end{bmatrix}      
-    =
-    \frac{1}{2m} (e_{1}e_{1} + e_{2}e_{2} + \cdots + e_{m}e_{m})   
-    =
-  \frac{1}{2m} (e_{1}^2 + e_{2}^2 + \cdots + e_{m}^2)           
-    =
-  \frac{1}{2m}\sum_{i = 1}^{m}e_i^2
-$$
+  \begin{bmatrix} e_1 \\ e_2 \\ \cdots \\ e_m \end{bmatrix} = \\     
+    =\frac{1}{2m} (e_{1}e_{1} + e_{2}e_{2} + \cdots + e_{m}e_{m})   
+    =\frac{1}{2m} (e_{1}^2 + e_{2}^2 + \cdots + e_{m}^2)           
+    =\frac{1}{2m}\sum_{i = 1}^{m}e_i^2$$
 
 
 
@@ -212,7 +206,8 @@ $(п2) : \frac{\partial}{\partial a}a^{T}Ba = (B + B^{T})a$
 
 $$
 \frac{\partial J(w)}{\partial w} = 
-\frac{\partial}{\partial w}[\frac{1}{2m}(y^{T}y - 2w^{T}X^{T}y + w^{T}X^{T}Xw)] = 
+\frac{\partial}{\partial w}[\frac{1}{2m}(y^{T}y - 2w^{T}X^{T}y + w^{T}X^{T}Xw)] = \\
+=
 \frac{1}{2m}[\frac{\partial}{\partial w}(y^{T}y) - 2\frac{\partial}{\partial w}(w^{T}X^{T}y) + \frac{\partial}{\partial w}(w^{T}X^{T}Xw)]
 $$
 
@@ -227,10 +222,10 @@ $$\frac{\partial}{\partial w}(w^{T}X^{T}y) = X^{T}y$$
 
 Згідно правила (п2) маємо (нехай $X^{T}X$ - $B$): 
 
-$$\frac{\partial}{\partial w}(w^{T}X^{T}Xw) = (X^{T}X + (X^{T}X)^{T})w = 
-згідно \; правила \; (в2) 
-= (X^{T}X + X^{\color{red}T}(X^{T})^{\color{red}T})w =
-згідно \; правила \; (в3) 
+$$\frac{\partial}{\partial w}(w^{T}X^{T}Xw) = (X^{T}X + (X^{T}X)^{T})w = \\
+згідно \; правила \; (в2) \\
+= (X^{T}X + X^{\color{red}T}(X^{T})^{\color{red}T})w = \\
+згідно \; правила \; (в3) \\
 = (X^{T}X + X^{T}X)w = 2X^{T}Xw
 $$
 
@@ -346,7 +341,7 @@ df_model <-
 
 Подивимось на залежність ціни квартили від площі:
 
-```{r, fig.width=10}
+```{r}
 p <- 
   ggplot(df_model, aes(x = area, y = target)) +
   geom_point(alpha = 0.25, col = "steelblue", size = 2) +
@@ -419,7 +414,7 @@ broom::tidy(model_lm) %>%
 
 
 
-Тепер отримаємо коефіцієнти лінійної рейгресії за допомогою раніше виведеної формули $w = (X^{T}X)^{-1}X^{T}y$:
+Тепер отримаємо коефіцієнти лінійної регресії за допомогою раніше виведеної формули $w = (X^{T}X)^{-1}X^{T}y$:
 
 ```{r}
 # напишемо функцію отримання w
@@ -471,7 +466,7 @@ get_linear_pred <-
 
 
 
-Зробимо прогноз значень за допомогою стандартної моделі:
+Зробимо прогноз значень за допомогою стандартної моделі і отриманих коефіцієнтів:
 ```{r}
 
 bind_cols(
@@ -491,6 +486,7 @@ bind_cols(
 Як показано, ніби сходиться.
 
 
+Перейдемо до градієнтного спуску.
 
 
 Напишемо функцію для обчислення функції втрат $J(w) = \frac{1}{2m} e^{T}e$:
@@ -503,19 +499,16 @@ cost_func <-
     y,     # вектор стовбець цільової змінної
     coef   # вектор стовбець коефіцієнтів моделі
   ) {
-    
     m <- nrow(x)
     e <- y - x %*% coef
-    
     result <- (1 / (2 * m)) * (t(e) %*% e)
     
     return(result)
-    
   }
 ```
 
 
-Напишемо функцію для обчислення градієнта функції втрат по параметрам моделі $\bigtriangledown_{w}J(w) = \frac{1}{m}(X^{T}(Xw - y))$ 
+Напишемо функцію для обчислення градієнта функції втрат по параметрах моделі $\bigtriangledown_{w}J(w) = \frac{1}{m}(X^{T}(Xw - y))$ 
 
 
 ```{r}
@@ -526,7 +519,6 @@ gradient <-
     coef
   ) {
     m <- nrow(x)
-    
     result <- (1 / m) * (t(x) %*% (x %*% coef - y))
     
     return(result)
@@ -547,27 +539,27 @@ get_linear_coef_grad <-
     count_iter = 100,
     alpha = 0.1
   ) {
-    
+    # створимо пусті списки, куди будемо записувати параметри і значення функції втрат
     coef_list <- vector(mode = "list", length = count_iter)
     cost_list <- vector(mode = "list", length = count_iter)
 
+    # починає іти по ітераціях
     for (iter in 1:count_iter) {
       # оновлюємо параметри моделі
       coef <- coef - alpha * gradient(x = x, y = y, coef = coef)
       # обчислюємо функцію втрат для оновлених параметрів моделі
       cost <- cost_func(x = x, y = y, coef = coef)
-      
       # збережемо все
       coef_list[[iter]] <- coef
       cost_list[[iter]] <- cost
 
     }
-    
+    # зробимо із списку дата фрейм
     cost_list <- map_dfr(
       .x = cost_list,
       .f = ~tibble(cost = .x)
     )
-    
+    # зробимо із списку дата фрейм
     coef_list <- map_dfr(
       .x = coef_list,
       .f = ~{
@@ -575,7 +567,6 @@ get_linear_coef_grad <-
       }
     ) %>% 
       rename_all(funs(paste0("w_", 1:nrow(coef))))
-    
     # буде повертатись табличка із значеннями функції втрат і значеннями параметрів моделі на кожній ітерації
     result <- bind_cols(
       tibble(iteration = 1:count_iter),
@@ -584,7 +575,6 @@ get_linear_coef_grad <-
     )
     
     return(result)
-    
   }
 
 ```
@@ -596,7 +586,6 @@ get_linear_coef_grad <-
 
 ```{r}
 w <- matrix(data = -20, nrow = 2, ncol = 1)
-
 w
 ```
 
@@ -614,7 +603,6 @@ coef_grad <- get_linear_coef_grad(
   count_iter = iter_for_model,
   alpha = learning_rate
 )
-
 coef_grad
 ```
 
@@ -622,7 +610,7 @@ coef_grad
 
 
 
-Відразу подивимось на коеціфієнти моделі на останній ітерації:
+Відразу подивимось на коефіцієнти моделі на останній ітерації:
 
 
 ```{r}
@@ -638,7 +626,7 @@ coef_grad %>%
 
 Подивимось на графік зміни функції втрат в залежності від ітерації:
 
-```{r, fig.width=10}
+```{r}
 plot_cost <- coef_grad %>% 
   ggplot(aes(x = iteration, y = cost, col = cost)) +
   geom_point(alpha = 0.7, show.legend = FALSE) +
@@ -659,7 +647,6 @@ plot_cost
 
 
 ```{r}
-# 
 coef_grid <- 
   expand.grid(
     w_1 = seq(-25, 25, length.out = 100), 
@@ -679,7 +666,6 @@ coef_grid <-
     )
   ) %>% 
   unnest()
-
 coef_grid %>% 
   slice(1:5) %>% 
   gt::gt()
@@ -688,7 +674,7 @@ coef_grid %>%
 
 Тепер побудуємо графік руху коефіцієнтів до мінімуму функції втрат:
 
-```{r, fig.width=10}
+```{r}
 plot_cost_coef <- 
   ggplot() + 
   geom_contour(
@@ -757,7 +743,7 @@ coef_grad_pred %>%
 
 А можна ще подивитись як впливає швидкість навчання на функцію втрат:
 
-```{r, fig.width=10}
+```{r}
 # задамо сітку швидкості навчання і обчислимо параметри моделі
 learning_rate_grid <- map_dfr(
   .x = c(0.1, 0.05, 0.01),

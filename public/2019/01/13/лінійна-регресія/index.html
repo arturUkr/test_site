@@ -59,7 +59,7 @@
 
   <article class="article">
     
-    <span class="article-duration">23 min read</span>
+    <span class="article-duration">24 min read</span>
     
 
     <h1 class="article-title">Лінійна регресія</h1>
@@ -169,19 +169,13 @@ y \approx \hat{y} = \begin{bmatrix}
 <p>Визначимо функцію втрат як суму квадратів похибок між цільовою змінною та прогнозними значеннями на всіх об“єктах вибірки: <span class="math display">\[
 J(w) = \frac{1}{2m} \sum_{i = 1}^{m}e_i^2
 \]</span></p>
-<p>Для зручності запишемо функцію втрат у векторній формі, яка, як показано далі, еквівадентна попередньому виразу: <span class="math display">\[
-J(w) = \frac{1}{2m} e^{T}e =                                     
-     = 
+<p>Для зручності запишемо функцію втрат у векторній формі, яка, як показано далі, еквівадентна попередньому виразу: <span class="math display">\[J(w) = \frac{1}{2m} e^{T}e =                                     
   \frac{1}{2m}
   \begin{bmatrix} e_1 &amp; e_2 &amp; \cdots &amp; e_m \end{bmatrix}
-  \begin{bmatrix} e_1 \\ e_2 \\ \cdots \\ e_m \end{bmatrix}      
-    =
-    \frac{1}{2m} (e_{1}e_{1} + e_{2}e_{2} + \cdots + e_{m}e_{m})   
-    =
-  \frac{1}{2m} (e_{1}^2 + e_{2}^2 + \cdots + e_{m}^2)           
-    =
-  \frac{1}{2m}\sum_{i = 1}^{m}e_i^2
-\]</span></p>
+  \begin{bmatrix} e_1 \\ e_2 \\ \cdots \\ e_m \end{bmatrix} = \\     
+    =\frac{1}{2m} (e_{1}e_{1} + e_{2}e_{2} + \cdots + e_{m}e_{m})   
+    =\frac{1}{2m} (e_{1}^2 + e_{2}^2 + \cdots + e_{m}^2)           
+    =\frac{1}{2m}\sum_{i = 1}^{m}e_i^2\]</span></p>
 <p>Зробимо собі шпаргалку із властивостями матриць (те, що постійно забувається і необхідно весь час гуглити):</p>
 <hr />
 <p><span class="math inline">\((в1): (A + B)^{T} = A^{T} + B^{T}\)</span><br />
@@ -210,7 +204,8 @@ J(w) = \frac{1}{2m} e^{T}e =
 <p>Вызьмемо похідну від функції втрат по параметрам моделі:</p>
 <p><span class="math display">\[
 \frac{\partial J(w)}{\partial w} = 
-\frac{\partial}{\partial w}[\frac{1}{2m}(y^{T}y - 2w^{T}X^{T}y + w^{T}X^{T}Xw)] = 
+\frac{\partial}{\partial w}[\frac{1}{2m}(y^{T}y - 2w^{T}X^{T}y + w^{T}X^{T}Xw)] = \\
+=
 \frac{1}{2m}[\frac{\partial}{\partial w}(y^{T}y) - 2\frac{\partial}{\partial w}(w^{T}X^{T}y) + \frac{\partial}{\partial w}(w^{T}X^{T}Xw)]
 \]</span></p>
 <p>Розглянемо кожну похідну окремо:</p>
@@ -218,10 +213,10 @@ J(w) = \frac{1}{2m} e^{T}e =
 <p>Згідно правила (п1) маємо (<span class="math inline">\(X^{T}y\)</span> - вектор стовбець):<br />
 <span class="math display">\[\frac{\partial}{\partial w}(w^{T}X^{T}y) = X^{T}y\]</span></p>
 <p>Згідно правила (п2) маємо (нехай <span class="math inline">\(X^{T}X\)</span> - <span class="math inline">\(B\)</span>):</p>
-<p><span class="math display">\[\frac{\partial}{\partial w}(w^{T}X^{T}Xw) = (X^{T}X + (X^{T}X)^{T})w = 
-згідно \; правила \; (в2) 
-= (X^{T}X + X^{\color{red}T}(X^{T})^{\color{red}T})w =
-згідно \; правила \; (в3) 
+<p><span class="math display">\[\frac{\partial}{\partial w}(w^{T}X^{T}Xw) = (X^{T}X + (X^{T}X)^{T})w = \\
+згідно \; правила \; (в2) \\
+= (X^{T}X + X^{\color{red}T}(X^{T})^{\color{red}T})w = \\
+згідно \; правила \; (в3) \\
 = (X^{T}X + X^{T}X)w = 2X^{T}Xw
 \]</span></p>
 <p>Отже: <span class="math display">\[\frac{\partial J(w)}{\partial w} = \frac{1}{2m}(0 - 2X^{T}y + 2X^{T}Xw) = \frac{1}{m}(X^{T}Xw - X^{T}y)\]</span></p>
@@ -288,7 +283,7 @@ library(gt)              # для гарних табличок</code></pre>
   theme(panel.grid = element_blank())
 
 p</code></pre>
-<p><img src="/post/2019-01-13-_files/figure-html/unnamed-chunk-4-1.png" width="960" /></p>
+<p><img src="/post/2019-01-13-_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Зробимо певні перетворення над змінною <em>area</em>: створимо <em>“рецепт”</em> (можна було б і більш простішим способом це зробити), щоб змінна мала більш стабільний розкид даних.</p>
 <pre class="r"><code># створюємо рецепт
 rec &lt;- 
@@ -358,7 +353,7 @@ broom::tidy(model_lm) %&gt;%
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#ftnomoamiu .gt_table {
+#dolzpjzqgw .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -377,13 +372,13 @@ broom::tidy(model_lm) %&gt;%
   /* table.border.top.color */
 }
 
-#ftnomoamiu .gt_heading {
+#dolzpjzqgw .gt_heading {
   background-color: #FFFFFF;
   /* heading.background.color */
   border-bottom-color: #FFFFFF;
 }
 
-#ftnomoamiu .gt_title {
+#dolzpjzqgw .gt_title {
   color: #000000;
   font-size: 125%;
   /* heading.title.font.size */
@@ -394,7 +389,7 @@ broom::tidy(model_lm) %&gt;%
   border-bottom-width: 0;
 }
 
-#ftnomoamiu .gt_subtitle {
+#dolzpjzqgw .gt_subtitle {
   color: #000000;
   font-size: 85%;
   /* heading.subtitle.font.size */
@@ -405,7 +400,7 @@ broom::tidy(model_lm) %&gt;%
   border-top-width: 0;
 }
 
-#ftnomoamiu .gt_bottom_border {
+#dolzpjzqgw .gt_bottom_border {
   border-bottom-style: solid;
   /* heading.border.bottom.style */
   border-bottom-width: 2px;
@@ -414,7 +409,7 @@ broom::tidy(model_lm) %&gt;%
   /* heading.border.bottom.color */
 }
 
-#ftnomoamiu .gt_column_spanner {
+#dolzpjzqgw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #A8A8A8;
@@ -422,7 +417,7 @@ broom::tidy(model_lm) %&gt;%
   padding-bottom: 4px;
 }
 
-#ftnomoamiu .gt_col_heading {
+#dolzpjzqgw .gt_col_heading {
   color: #000000;
   background-color: #FFFFFF;
   /* column_labels.background.color */
@@ -435,11 +430,11 @@ broom::tidy(model_lm) %&gt;%
   margin: 10px;
 }
 
-#ftnomoamiu .gt_sep_right {
+#dolzpjzqgw .gt_sep_right {
   border-right: 5px solid #FFFFFF;
 }
 
-#ftnomoamiu .gt_group_heading {
+#dolzpjzqgw .gt_group_heading {
   padding: 8px;
   color: #000000;
   background-color: #FFFFFF;
@@ -463,7 +458,7 @@ broom::tidy(model_lm) %&gt;%
   vertical-align: middle;
 }
 
-#ftnomoamiu .gt_empty_group_heading {
+#dolzpjzqgw .gt_empty_group_heading {
   padding: 0.5px;
   color: #000000;
   background-color: #FFFFFF;
@@ -487,29 +482,29 @@ broom::tidy(model_lm) %&gt;%
   vertical-align: middle;
 }
 
-#ftnomoamiu .gt_striped {
+#dolzpjzqgw .gt_striped {
   background-color: #f2f2f2;
 }
 
-#ftnomoamiu .gt_row {
+#dolzpjzqgw .gt_row {
   padding: 10px;
   /* row.padding */
   margin: 10px;
   vertical-align: middle;
 }
 
-#ftnomoamiu .gt_stub {
+#dolzpjzqgw .gt_stub {
   border-right-style: solid;
   border-right-width: 2px;
   border-right-color: #A8A8A8;
   padding-left: 12px;
 }
 
-#ftnomoamiu .gt_stub.gt_row {
+#dolzpjzqgw .gt_stub.gt_row {
   background-color: #FFFFFF;
 }
 
-#ftnomoamiu .gt_summary_row {
+#dolzpjzqgw .gt_summary_row {
   background-color: #FFFFFF;
   /* summary_row.background.color */
   padding: 6px;
@@ -518,13 +513,13 @@ broom::tidy(model_lm) %&gt;%
   /* summary_row.text_transform */
 }
 
-#ftnomoamiu .gt_first_summary_row {
+#dolzpjzqgw .gt_first_summary_row {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #A8A8A8;
 }
 
-#ftnomoamiu .gt_table_body {
+#dolzpjzqgw .gt_table_body {
   border-top-style: solid;
   /* field.border.top.style */
   border-top-width: 2px;
@@ -539,55 +534,55 @@ broom::tidy(model_lm) %&gt;%
   /* field.border.bottom.color */
 }
 
-#ftnomoamiu .gt_footnote {
+#dolzpjzqgw .gt_footnote {
   font-size: 90%;
   /* footnote.font.size */
   padding: 4px;
   /* footnote.padding */
 }
 
-#ftnomoamiu .gt_sourcenote {
+#dolzpjzqgw .gt_sourcenote {
   font-size: 90%;
   /* sourcenote.font.size */
   padding: 4px;
   /* sourcenote.padding */
 }
 
-#ftnomoamiu .gt_center {
+#dolzpjzqgw .gt_center {
   text-align: center;
 }
 
-#ftnomoamiu .gt_left {
+#dolzpjzqgw .gt_left {
   text-align: left;
 }
 
-#ftnomoamiu .gt_right {
+#dolzpjzqgw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ftnomoamiu .gt_font_normal {
+#dolzpjzqgw .gt_font_normal {
   font-weight: normal;
 }
 
-#ftnomoamiu .gt_font_bold {
+#dolzpjzqgw .gt_font_bold {
   font-weight: bold;
 }
 
-#ftnomoamiu .gt_font_italic {
+#dolzpjzqgw .gt_font_italic {
   font-style: italic;
 }
 
-#ftnomoamiu .gt_super {
+#dolzpjzqgw .gt_super {
   font-size: 65%;
 }
 
-#ftnomoamiu .gt_footnote_glyph {
+#dolzpjzqgw .gt_footnote_glyph {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="ftnomoamiu" style="overflow-x:auto;"><!--gt table start-->
+<div id="dolzpjzqgw" style="overflow-x:auto;"><!--gt table start-->
 <table class='gt_table'>
 <tr>
 <th class='gt_col_heading gt_left' rowspan='1' colspan='1'>term</th>
@@ -606,7 +601,7 @@ broom::tidy(model_lm) %&gt;%
 </table>
 <!--gt table end-->
 </div>
-<p>Тепер отримаємо коефіцієнти лінійної рейгресії за допомогою раніше виведеної формули <span class="math inline">\(w = (X^{T}X)^{-1}X^{T}y\)</span>:</p>
+<p>Тепер отримаємо коефіцієнти лінійної регресії за допомогою раніше виведеної формули <span class="math inline">\(w = (X^{T}X)^{-1}X^{T}y\)</span>:</p>
 <pre class="r"><code># напишемо функцію отримання w
 get_linear_coef &lt;- 
   function(
@@ -635,7 +630,7 @@ coef %&gt;%
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#kesmdisotv .gt_table {
+#quazqegwqr .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -654,13 +649,13 @@ coef %&gt;%
   /* table.border.top.color */
 }
 
-#kesmdisotv .gt_heading {
+#quazqegwqr .gt_heading {
   background-color: #FFFFFF;
   /* heading.background.color */
   border-bottom-color: #FFFFFF;
 }
 
-#kesmdisotv .gt_title {
+#quazqegwqr .gt_title {
   color: #000000;
   font-size: 125%;
   /* heading.title.font.size */
@@ -671,7 +666,7 @@ coef %&gt;%
   border-bottom-width: 0;
 }
 
-#kesmdisotv .gt_subtitle {
+#quazqegwqr .gt_subtitle {
   color: #000000;
   font-size: 85%;
   /* heading.subtitle.font.size */
@@ -682,7 +677,7 @@ coef %&gt;%
   border-top-width: 0;
 }
 
-#kesmdisotv .gt_bottom_border {
+#quazqegwqr .gt_bottom_border {
   border-bottom-style: solid;
   /* heading.border.bottom.style */
   border-bottom-width: 2px;
@@ -691,7 +686,7 @@ coef %&gt;%
   /* heading.border.bottom.color */
 }
 
-#kesmdisotv .gt_column_spanner {
+#quazqegwqr .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #A8A8A8;
@@ -699,7 +694,7 @@ coef %&gt;%
   padding-bottom: 4px;
 }
 
-#kesmdisotv .gt_col_heading {
+#quazqegwqr .gt_col_heading {
   color: #000000;
   background-color: #FFFFFF;
   /* column_labels.background.color */
@@ -712,11 +707,11 @@ coef %&gt;%
   margin: 10px;
 }
 
-#kesmdisotv .gt_sep_right {
+#quazqegwqr .gt_sep_right {
   border-right: 5px solid #FFFFFF;
 }
 
-#kesmdisotv .gt_group_heading {
+#quazqegwqr .gt_group_heading {
   padding: 8px;
   color: #000000;
   background-color: #FFFFFF;
@@ -740,7 +735,7 @@ coef %&gt;%
   vertical-align: middle;
 }
 
-#kesmdisotv .gt_empty_group_heading {
+#quazqegwqr .gt_empty_group_heading {
   padding: 0.5px;
   color: #000000;
   background-color: #FFFFFF;
@@ -764,29 +759,29 @@ coef %&gt;%
   vertical-align: middle;
 }
 
-#kesmdisotv .gt_striped {
+#quazqegwqr .gt_striped {
   background-color: #f2f2f2;
 }
 
-#kesmdisotv .gt_row {
+#quazqegwqr .gt_row {
   padding: 10px;
   /* row.padding */
   margin: 10px;
   vertical-align: middle;
 }
 
-#kesmdisotv .gt_stub {
+#quazqegwqr .gt_stub {
   border-right-style: solid;
   border-right-width: 2px;
   border-right-color: #A8A8A8;
   padding-left: 12px;
 }
 
-#kesmdisotv .gt_stub.gt_row {
+#quazqegwqr .gt_stub.gt_row {
   background-color: #FFFFFF;
 }
 
-#kesmdisotv .gt_summary_row {
+#quazqegwqr .gt_summary_row {
   background-color: #FFFFFF;
   /* summary_row.background.color */
   padding: 6px;
@@ -795,13 +790,13 @@ coef %&gt;%
   /* summary_row.text_transform */
 }
 
-#kesmdisotv .gt_first_summary_row {
+#quazqegwqr .gt_first_summary_row {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #A8A8A8;
 }
 
-#kesmdisotv .gt_table_body {
+#quazqegwqr .gt_table_body {
   border-top-style: solid;
   /* field.border.top.style */
   border-top-width: 2px;
@@ -816,55 +811,55 @@ coef %&gt;%
   /* field.border.bottom.color */
 }
 
-#kesmdisotv .gt_footnote {
+#quazqegwqr .gt_footnote {
   font-size: 90%;
   /* footnote.font.size */
   padding: 4px;
   /* footnote.padding */
 }
 
-#kesmdisotv .gt_sourcenote {
+#quazqegwqr .gt_sourcenote {
   font-size: 90%;
   /* sourcenote.font.size */
   padding: 4px;
   /* sourcenote.padding */
 }
 
-#kesmdisotv .gt_center {
+#quazqegwqr .gt_center {
   text-align: center;
 }
 
-#kesmdisotv .gt_left {
+#quazqegwqr .gt_left {
   text-align: left;
 }
 
-#kesmdisotv .gt_right {
+#quazqegwqr .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#kesmdisotv .gt_font_normal {
+#quazqegwqr .gt_font_normal {
   font-weight: normal;
 }
 
-#kesmdisotv .gt_font_bold {
+#quazqegwqr .gt_font_bold {
   font-weight: bold;
 }
 
-#kesmdisotv .gt_font_italic {
+#quazqegwqr .gt_font_italic {
   font-style: italic;
 }
 
-#kesmdisotv .gt_super {
+#quazqegwqr .gt_super {
   font-size: 65%;
 }
 
-#kesmdisotv .gt_footnote_glyph {
+#quazqegwqr .gt_footnote_glyph {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="kesmdisotv" style="overflow-x:auto;"><!--gt table start-->
+<div id="quazqegwqr" style="overflow-x:auto;"><!--gt table start-->
 <table class='gt_table'>
 <tr>
 <th class='gt_col_heading gt_left' rowspan='1' colspan='1'>term</th>
@@ -895,7 +890,7 @@ coef %&gt;%
     return(result)
     
   }</code></pre>
-<p>Зробимо прогноз значень за допомогою стандартної моделі:</p>
+<p>Зробимо прогноз значень за допомогою стандартної моделі і отриманих коефіцієнтів:</p>
 <pre class="r"><code>bind_cols(
   tibble(&#39;Стандартна модель&#39; = predict(model_lm, df_model)),
   get_linear_pred(x = X, coef = coef) %&gt;% 
@@ -908,7 +903,7 @@ coef %&gt;%
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#xhrbjxvvth .gt_table {
+#ggdpvdfuic .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -927,13 +922,13 @@ coef %&gt;%
   /* table.border.top.color */
 }
 
-#xhrbjxvvth .gt_heading {
+#ggdpvdfuic .gt_heading {
   background-color: #FFFFFF;
   /* heading.background.color */
   border-bottom-color: #FFFFFF;
 }
 
-#xhrbjxvvth .gt_title {
+#ggdpvdfuic .gt_title {
   color: #000000;
   font-size: 125%;
   /* heading.title.font.size */
@@ -944,7 +939,7 @@ coef %&gt;%
   border-bottom-width: 0;
 }
 
-#xhrbjxvvth .gt_subtitle {
+#ggdpvdfuic .gt_subtitle {
   color: #000000;
   font-size: 85%;
   /* heading.subtitle.font.size */
@@ -955,7 +950,7 @@ coef %&gt;%
   border-top-width: 0;
 }
 
-#xhrbjxvvth .gt_bottom_border {
+#ggdpvdfuic .gt_bottom_border {
   border-bottom-style: solid;
   /* heading.border.bottom.style */
   border-bottom-width: 2px;
@@ -964,7 +959,7 @@ coef %&gt;%
   /* heading.border.bottom.color */
 }
 
-#xhrbjxvvth .gt_column_spanner {
+#ggdpvdfuic .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #A8A8A8;
@@ -972,7 +967,7 @@ coef %&gt;%
   padding-bottom: 4px;
 }
 
-#xhrbjxvvth .gt_col_heading {
+#ggdpvdfuic .gt_col_heading {
   color: #000000;
   background-color: #FFFFFF;
   /* column_labels.background.color */
@@ -985,11 +980,11 @@ coef %&gt;%
   margin: 10px;
 }
 
-#xhrbjxvvth .gt_sep_right {
+#ggdpvdfuic .gt_sep_right {
   border-right: 5px solid #FFFFFF;
 }
 
-#xhrbjxvvth .gt_group_heading {
+#ggdpvdfuic .gt_group_heading {
   padding: 8px;
   color: #000000;
   background-color: #FFFFFF;
@@ -1013,7 +1008,7 @@ coef %&gt;%
   vertical-align: middle;
 }
 
-#xhrbjxvvth .gt_empty_group_heading {
+#ggdpvdfuic .gt_empty_group_heading {
   padding: 0.5px;
   color: #000000;
   background-color: #FFFFFF;
@@ -1037,29 +1032,29 @@ coef %&gt;%
   vertical-align: middle;
 }
 
-#xhrbjxvvth .gt_striped {
+#ggdpvdfuic .gt_striped {
   background-color: #f2f2f2;
 }
 
-#xhrbjxvvth .gt_row {
+#ggdpvdfuic .gt_row {
   padding: 10px;
   /* row.padding */
   margin: 10px;
   vertical-align: middle;
 }
 
-#xhrbjxvvth .gt_stub {
+#ggdpvdfuic .gt_stub {
   border-right-style: solid;
   border-right-width: 2px;
   border-right-color: #A8A8A8;
   padding-left: 12px;
 }
 
-#xhrbjxvvth .gt_stub.gt_row {
+#ggdpvdfuic .gt_stub.gt_row {
   background-color: #FFFFFF;
 }
 
-#xhrbjxvvth .gt_summary_row {
+#ggdpvdfuic .gt_summary_row {
   background-color: #FFFFFF;
   /* summary_row.background.color */
   padding: 6px;
@@ -1068,13 +1063,13 @@ coef %&gt;%
   /* summary_row.text_transform */
 }
 
-#xhrbjxvvth .gt_first_summary_row {
+#ggdpvdfuic .gt_first_summary_row {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #A8A8A8;
 }
 
-#xhrbjxvvth .gt_table_body {
+#ggdpvdfuic .gt_table_body {
   border-top-style: solid;
   /* field.border.top.style */
   border-top-width: 2px;
@@ -1089,55 +1084,55 @@ coef %&gt;%
   /* field.border.bottom.color */
 }
 
-#xhrbjxvvth .gt_footnote {
+#ggdpvdfuic .gt_footnote {
   font-size: 90%;
   /* footnote.font.size */
   padding: 4px;
   /* footnote.padding */
 }
 
-#xhrbjxvvth .gt_sourcenote {
+#ggdpvdfuic .gt_sourcenote {
   font-size: 90%;
   /* sourcenote.font.size */
   padding: 4px;
   /* sourcenote.padding */
 }
 
-#xhrbjxvvth .gt_center {
+#ggdpvdfuic .gt_center {
   text-align: center;
 }
 
-#xhrbjxvvth .gt_left {
+#ggdpvdfuic .gt_left {
   text-align: left;
 }
 
-#xhrbjxvvth .gt_right {
+#ggdpvdfuic .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xhrbjxvvth .gt_font_normal {
+#ggdpvdfuic .gt_font_normal {
   font-weight: normal;
 }
 
-#xhrbjxvvth .gt_font_bold {
+#ggdpvdfuic .gt_font_bold {
   font-weight: bold;
 }
 
-#xhrbjxvvth .gt_font_italic {
+#ggdpvdfuic .gt_font_italic {
   font-style: italic;
 }
 
-#xhrbjxvvth .gt_super {
+#ggdpvdfuic .gt_super {
   font-size: 65%;
 }
 
-#xhrbjxvvth .gt_footnote_glyph {
+#ggdpvdfuic .gt_footnote_glyph {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="xhrbjxvvth" style="overflow-x:auto;"><!--gt table start-->
+<div id="ggdpvdfuic" style="overflow-x:auto;"><!--gt table start-->
 <table class='gt_table'>
 <tr>
 <th class='gt_col_heading gt_right' rowspan='1' colspan='1'>Стандартна модель</th>
@@ -1169,6 +1164,7 @@ coef %&gt;%
 <!--gt table end-->
 </div>
 <p>Як показано, ніби сходиться.</p>
+<p>Перейдемо до градієнтного спуску.</p>
 <p>Напишемо функцію для обчислення функції втрат <span class="math inline">\(J(w) = \frac{1}{2m} e^{T}e\)</span>:</p>
 <pre class="r"><code>cost_func &lt;- 
   function(
@@ -1176,16 +1172,13 @@ coef %&gt;%
     y,     # вектор стовбець цільової змінної
     coef   # вектор стовбець коефіцієнтів моделі
   ) {
-    
     m &lt;- nrow(x)
     e &lt;- y - x %*% coef
-    
     result &lt;- (1 / (2 * m)) * (t(e) %*% e)
     
     return(result)
-    
   }</code></pre>
-<p>Напишемо функцію для обчислення градієнта функції втрат по параметрам моделі <span class="math inline">\(\bigtriangledown_{w}J(w) = \frac{1}{m}(X^{T}(Xw - y))\)</span></p>
+<p>Напишемо функцію для обчислення градієнта функції втрат по параметрах моделі <span class="math inline">\(\bigtriangledown_{w}J(w) = \frac{1}{m}(X^{T}(Xw - y))\)</span></p>
 <pre class="r"><code>gradient &lt;- 
   function(
     x,
@@ -1193,7 +1186,6 @@ coef %&gt;%
     coef
   ) {
     m &lt;- nrow(x)
-    
     result &lt;- (1 / m) * (t(x) %*% (x %*% coef - y))
     
     return(result)
@@ -1207,27 +1199,27 @@ coef %&gt;%
     count_iter = 100,
     alpha = 0.1
   ) {
-    
+    # створимо пусті списки, куди будемо записувати параметри і значення функції втрат
     coef_list &lt;- vector(mode = &quot;list&quot;, length = count_iter)
     cost_list &lt;- vector(mode = &quot;list&quot;, length = count_iter)
 
+    # починає іти по ітераціях
     for (iter in 1:count_iter) {
       # оновлюємо параметри моделі
       coef &lt;- coef - alpha * gradient(x = x, y = y, coef = coef)
       # обчислюємо функцію втрат для оновлених параметрів моделі
       cost &lt;- cost_func(x = x, y = y, coef = coef)
-      
       # збережемо все
       coef_list[[iter]] &lt;- coef
       cost_list[[iter]] &lt;- cost
 
     }
-    
+    # зробимо із списку дата фрейм
     cost_list &lt;- map_dfr(
       .x = cost_list,
       .f = ~tibble(cost = .x)
     )
-    
+    # зробимо із списку дата фрейм
     coef_list &lt;- map_dfr(
       .x = coef_list,
       .f = ~{
@@ -1235,7 +1227,6 @@ coef %&gt;%
       }
     ) %&gt;% 
       rename_all(funs(paste0(&quot;w_&quot;, 1:nrow(coef))))
-    
     # буде повертатись табличка із значеннями функції втрат і значеннями параметрів моделі на кожній ітерації
     result &lt;- bind_cols(
       tibble(iteration = 1:count_iter),
@@ -1244,12 +1235,10 @@ coef %&gt;%
     )
     
     return(result)
-    
   }</code></pre>
 <p>Отже, маючи всі необхідні інструменти прогонимо градієнтний спуск.</p>
 <p>Спочатку ініціалізуємо параметри моделі:</p>
 <pre class="r"><code>w &lt;- matrix(data = -20, nrow = 2, ncol = 1)
-
 w</code></pre>
 <pre><code>##      [,1]
 ## [1,]  -20
@@ -1265,7 +1254,6 @@ coef_grad &lt;- get_linear_coef_grad(
   count_iter = iter_for_model,
   alpha = learning_rate
 )
-
 coef_grad</code></pre>
 <pre><code>## # A tibble: 100 x 4
 ##    iteration  cost     w_1    w_2
@@ -1281,7 +1269,7 @@ coef_grad</code></pre>
 ##  9         9 108.   -0.385  -7.66
 ## 10        10  87.1   0.856  -6.88
 ## # ... with 90 more rows</code></pre>
-<p>Відразу подивимось на коеціфієнти моделі на останній ітерації:</p>
+<p>Відразу подивимось на коефіцієнти моделі на останній ітерації:</p>
 <pre class="r"><code>coef_grad %&gt;% 
   filter(iteration == iter_for_model) %&gt;% 
   select(starts_with(&quot;w_&quot;)) %&gt;% 
@@ -1290,7 +1278,7 @@ coef_grad</code></pre>
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#rgpgmtwkqi .gt_table {
+#ktzvtxmqze .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1309,13 +1297,13 @@ coef_grad</code></pre>
   /* table.border.top.color */
 }
 
-#rgpgmtwkqi .gt_heading {
+#ktzvtxmqze .gt_heading {
   background-color: #FFFFFF;
   /* heading.background.color */
   border-bottom-color: #FFFFFF;
 }
 
-#rgpgmtwkqi .gt_title {
+#ktzvtxmqze .gt_title {
   color: #000000;
   font-size: 125%;
   /* heading.title.font.size */
@@ -1326,7 +1314,7 @@ coef_grad</code></pre>
   border-bottom-width: 0;
 }
 
-#rgpgmtwkqi .gt_subtitle {
+#ktzvtxmqze .gt_subtitle {
   color: #000000;
   font-size: 85%;
   /* heading.subtitle.font.size */
@@ -1337,7 +1325,7 @@ coef_grad</code></pre>
   border-top-width: 0;
 }
 
-#rgpgmtwkqi .gt_bottom_border {
+#ktzvtxmqze .gt_bottom_border {
   border-bottom-style: solid;
   /* heading.border.bottom.style */
   border-bottom-width: 2px;
@@ -1346,7 +1334,7 @@ coef_grad</code></pre>
   /* heading.border.bottom.color */
 }
 
-#rgpgmtwkqi .gt_column_spanner {
+#ktzvtxmqze .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #A8A8A8;
@@ -1354,7 +1342,7 @@ coef_grad</code></pre>
   padding-bottom: 4px;
 }
 
-#rgpgmtwkqi .gt_col_heading {
+#ktzvtxmqze .gt_col_heading {
   color: #000000;
   background-color: #FFFFFF;
   /* column_labels.background.color */
@@ -1367,11 +1355,11 @@ coef_grad</code></pre>
   margin: 10px;
 }
 
-#rgpgmtwkqi .gt_sep_right {
+#ktzvtxmqze .gt_sep_right {
   border-right: 5px solid #FFFFFF;
 }
 
-#rgpgmtwkqi .gt_group_heading {
+#ktzvtxmqze .gt_group_heading {
   padding: 8px;
   color: #000000;
   background-color: #FFFFFF;
@@ -1395,7 +1383,7 @@ coef_grad</code></pre>
   vertical-align: middle;
 }
 
-#rgpgmtwkqi .gt_empty_group_heading {
+#ktzvtxmqze .gt_empty_group_heading {
   padding: 0.5px;
   color: #000000;
   background-color: #FFFFFF;
@@ -1419,29 +1407,29 @@ coef_grad</code></pre>
   vertical-align: middle;
 }
 
-#rgpgmtwkqi .gt_striped {
+#ktzvtxmqze .gt_striped {
   background-color: #f2f2f2;
 }
 
-#rgpgmtwkqi .gt_row {
+#ktzvtxmqze .gt_row {
   padding: 10px;
   /* row.padding */
   margin: 10px;
   vertical-align: middle;
 }
 
-#rgpgmtwkqi .gt_stub {
+#ktzvtxmqze .gt_stub {
   border-right-style: solid;
   border-right-width: 2px;
   border-right-color: #A8A8A8;
   padding-left: 12px;
 }
 
-#rgpgmtwkqi .gt_stub.gt_row {
+#ktzvtxmqze .gt_stub.gt_row {
   background-color: #FFFFFF;
 }
 
-#rgpgmtwkqi .gt_summary_row {
+#ktzvtxmqze .gt_summary_row {
   background-color: #FFFFFF;
   /* summary_row.background.color */
   padding: 6px;
@@ -1450,13 +1438,13 @@ coef_grad</code></pre>
   /* summary_row.text_transform */
 }
 
-#rgpgmtwkqi .gt_first_summary_row {
+#ktzvtxmqze .gt_first_summary_row {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #A8A8A8;
 }
 
-#rgpgmtwkqi .gt_table_body {
+#ktzvtxmqze .gt_table_body {
   border-top-style: solid;
   /* field.border.top.style */
   border-top-width: 2px;
@@ -1471,55 +1459,55 @@ coef_grad</code></pre>
   /* field.border.bottom.color */
 }
 
-#rgpgmtwkqi .gt_footnote {
+#ktzvtxmqze .gt_footnote {
   font-size: 90%;
   /* footnote.font.size */
   padding: 4px;
   /* footnote.padding */
 }
 
-#rgpgmtwkqi .gt_sourcenote {
+#ktzvtxmqze .gt_sourcenote {
   font-size: 90%;
   /* sourcenote.font.size */
   padding: 4px;
   /* sourcenote.padding */
 }
 
-#rgpgmtwkqi .gt_center {
+#ktzvtxmqze .gt_center {
   text-align: center;
 }
 
-#rgpgmtwkqi .gt_left {
+#ktzvtxmqze .gt_left {
   text-align: left;
 }
 
-#rgpgmtwkqi .gt_right {
+#ktzvtxmqze .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#rgpgmtwkqi .gt_font_normal {
+#ktzvtxmqze .gt_font_normal {
   font-weight: normal;
 }
 
-#rgpgmtwkqi .gt_font_bold {
+#ktzvtxmqze .gt_font_bold {
   font-weight: bold;
 }
 
-#rgpgmtwkqi .gt_font_italic {
+#ktzvtxmqze .gt_font_italic {
   font-style: italic;
 }
 
-#rgpgmtwkqi .gt_super {
+#ktzvtxmqze .gt_super {
   font-size: 65%;
 }
 
-#rgpgmtwkqi .gt_footnote_glyph {
+#ktzvtxmqze .gt_footnote_glyph {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="rgpgmtwkqi" style="overflow-x:auto;"><!--gt table start-->
+<div id="ktzvtxmqze" style="overflow-x:auto;"><!--gt table start-->
 <table class='gt_table'>
 <tr>
 <th class='gt_col_heading gt_right' rowspan='1' colspan='1'>w_1</th>
@@ -1544,11 +1532,10 @@ coef_grad</code></pre>
   theme(panel.grid = element_blank())
 
 plot_cost</code></pre>
-<p><img src="/post/2019-01-13-_files/figure-html/unnamed-chunk-18-1.png" width="960" /></p>
+<p><img src="/post/2019-01-13-_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>Можна також подивитись як “рухались” параметри моделі до мінімуму функції втрат.</p>
 <p>Створимо спочатку сітку із параметрів, для яких обчислимо функцію втрат:</p>
-<pre class="r"><code># 
-coef_grid &lt;- 
+<pre class="r"><code>coef_grid &lt;- 
   expand.grid(
     w_1 = seq(-25, 25, length.out = 100), 
     w_2 = seq(-25, 25, length.out = 100)
@@ -1567,7 +1554,6 @@ coef_grid &lt;-
     )
   ) %&gt;% 
   unnest()
-
 coef_grid %&gt;% 
   slice(1:5) %&gt;% 
   gt::gt()</code></pre>
@@ -1575,7 +1561,7 @@ coef_grid %&gt;%
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#jtqizxqbsr .gt_table {
+#owxkxqczkw .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1594,13 +1580,13 @@ coef_grid %&gt;%
   /* table.border.top.color */
 }
 
-#jtqizxqbsr .gt_heading {
+#owxkxqczkw .gt_heading {
   background-color: #FFFFFF;
   /* heading.background.color */
   border-bottom-color: #FFFFFF;
 }
 
-#jtqizxqbsr .gt_title {
+#owxkxqczkw .gt_title {
   color: #000000;
   font-size: 125%;
   /* heading.title.font.size */
@@ -1611,7 +1597,7 @@ coef_grid %&gt;%
   border-bottom-width: 0;
 }
 
-#jtqizxqbsr .gt_subtitle {
+#owxkxqczkw .gt_subtitle {
   color: #000000;
   font-size: 85%;
   /* heading.subtitle.font.size */
@@ -1622,7 +1608,7 @@ coef_grid %&gt;%
   border-top-width: 0;
 }
 
-#jtqizxqbsr .gt_bottom_border {
+#owxkxqczkw .gt_bottom_border {
   border-bottom-style: solid;
   /* heading.border.bottom.style */
   border-bottom-width: 2px;
@@ -1631,7 +1617,7 @@ coef_grid %&gt;%
   /* heading.border.bottom.color */
 }
 
-#jtqizxqbsr .gt_column_spanner {
+#owxkxqczkw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #A8A8A8;
@@ -1639,7 +1625,7 @@ coef_grid %&gt;%
   padding-bottom: 4px;
 }
 
-#jtqizxqbsr .gt_col_heading {
+#owxkxqczkw .gt_col_heading {
   color: #000000;
   background-color: #FFFFFF;
   /* column_labels.background.color */
@@ -1652,11 +1638,11 @@ coef_grid %&gt;%
   margin: 10px;
 }
 
-#jtqizxqbsr .gt_sep_right {
+#owxkxqczkw .gt_sep_right {
   border-right: 5px solid #FFFFFF;
 }
 
-#jtqizxqbsr .gt_group_heading {
+#owxkxqczkw .gt_group_heading {
   padding: 8px;
   color: #000000;
   background-color: #FFFFFF;
@@ -1680,7 +1666,7 @@ coef_grid %&gt;%
   vertical-align: middle;
 }
 
-#jtqizxqbsr .gt_empty_group_heading {
+#owxkxqczkw .gt_empty_group_heading {
   padding: 0.5px;
   color: #000000;
   background-color: #FFFFFF;
@@ -1704,29 +1690,29 @@ coef_grid %&gt;%
   vertical-align: middle;
 }
 
-#jtqizxqbsr .gt_striped {
+#owxkxqczkw .gt_striped {
   background-color: #f2f2f2;
 }
 
-#jtqizxqbsr .gt_row {
+#owxkxqczkw .gt_row {
   padding: 10px;
   /* row.padding */
   margin: 10px;
   vertical-align: middle;
 }
 
-#jtqizxqbsr .gt_stub {
+#owxkxqczkw .gt_stub {
   border-right-style: solid;
   border-right-width: 2px;
   border-right-color: #A8A8A8;
   padding-left: 12px;
 }
 
-#jtqizxqbsr .gt_stub.gt_row {
+#owxkxqczkw .gt_stub.gt_row {
   background-color: #FFFFFF;
 }
 
-#jtqizxqbsr .gt_summary_row {
+#owxkxqczkw .gt_summary_row {
   background-color: #FFFFFF;
   /* summary_row.background.color */
   padding: 6px;
@@ -1735,13 +1721,13 @@ coef_grid %&gt;%
   /* summary_row.text_transform */
 }
 
-#jtqizxqbsr .gt_first_summary_row {
+#owxkxqczkw .gt_first_summary_row {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #A8A8A8;
 }
 
-#jtqizxqbsr .gt_table_body {
+#owxkxqczkw .gt_table_body {
   border-top-style: solid;
   /* field.border.top.style */
   border-top-width: 2px;
@@ -1756,55 +1742,55 @@ coef_grid %&gt;%
   /* field.border.bottom.color */
 }
 
-#jtqizxqbsr .gt_footnote {
+#owxkxqczkw .gt_footnote {
   font-size: 90%;
   /* footnote.font.size */
   padding: 4px;
   /* footnote.padding */
 }
 
-#jtqizxqbsr .gt_sourcenote {
+#owxkxqczkw .gt_sourcenote {
   font-size: 90%;
   /* sourcenote.font.size */
   padding: 4px;
   /* sourcenote.padding */
 }
 
-#jtqizxqbsr .gt_center {
+#owxkxqczkw .gt_center {
   text-align: center;
 }
 
-#jtqizxqbsr .gt_left {
+#owxkxqczkw .gt_left {
   text-align: left;
 }
 
-#jtqizxqbsr .gt_right {
+#owxkxqczkw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#jtqizxqbsr .gt_font_normal {
+#owxkxqczkw .gt_font_normal {
   font-weight: normal;
 }
 
-#jtqizxqbsr .gt_font_bold {
+#owxkxqczkw .gt_font_bold {
   font-weight: bold;
 }
 
-#jtqizxqbsr .gt_font_italic {
+#owxkxqczkw .gt_font_italic {
   font-style: italic;
 }
 
-#jtqizxqbsr .gt_super {
+#owxkxqczkw .gt_super {
   font-size: 65%;
 }
 
-#jtqizxqbsr .gt_footnote_glyph {
+#owxkxqczkw .gt_footnote_glyph {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="jtqizxqbsr" style="overflow-x:auto;"><!--gt table start-->
+<div id="owxkxqczkw" style="overflow-x:auto;"><!--gt table start-->
 <table class='gt_table'>
 <tr>
 <th class='gt_col_heading gt_right' rowspan='1' colspan='1'>rownumb</th>
@@ -1864,7 +1850,7 @@ coef_grid %&gt;%
   theme(panel.grid = element_blank())
 
 plot_cost_coef</code></pre>
-<p><img src="/post/2019-01-13-_files/figure-html/unnamed-chunk-20-1.png" width="960" /></p>
+<p><img src="/post/2019-01-13-_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <p>Ось так ми і добрались до мінімуму функції втрат :)</p>
 <p>Подивимось як змінювалась лінія регресії по ітераціях</p>
 <pre class="r"><code># зробимо прогнози для параметрів моделі 
@@ -1931,7 +1917,7 @@ plot_alpha &lt;-
   theme(panel.grid = element_blank())
 
 plot_alpha</code></pre>
-<p><img src="/post/2019-01-13-_files/figure-html/unnamed-chunk-22-1.png" width="960" /></p>
+<p><img src="/post/2019-01-13-_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <p>Як видно, чим менша швидкість, тим повільніше навчаємось.</p>
 </div>
 
@@ -1972,13 +1958,6 @@ plot_alpha</code></pre>
     
 <script src="/js/math-code.js"></script>
 <script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-
-
-    
-  </body>
-</html>
-
-=TeX-MML-AM_CHTML"></script>
 
 
     
