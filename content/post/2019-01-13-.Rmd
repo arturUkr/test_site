@@ -1,0 +1,793 @@
+---
+title: Лінійна регресія
+author: Артур
+date: '2019-01-13'
+slug: ''
+categories: []
+tags:
+  - R
+  - model
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F, message = F)
+# https://en.wikibooks.org/wiki/LaTeX/Mathematics
+# https://rstudio.cloud/project/167236
+```
+
+
+## Всякі різні викладки 
+
+
+Лінійна регресія - метод відновлення залежності між цільовою змінною та іншими змінними. Лінійна означає, що цільова змінна виражається через рівняння наступного вигляду $y = ax + b + e = \hat{y} + e$, де $e$ - це похибка моделі. 
+
+
+Для початку вкажемо певні позначення, які далі нам трішки пригодяться:
+
+     
+$m$ - кількість об"єктів у вибірці;     
+$n$ - кількість змінних;     
+$y$ - цільова змінна;    
+$\hat{y}$ - прогнозні значення цільової змінної;     
+$X$ - змінні, за допомогою яких описується цільова змінна (перший стовбець складається із одиниць);     
+$w$ - коефіцієнти при змінних;     
+$y_i$ - значення цільової змінної для $i$-го об"єкту;     
+$x_i$ - значення змінних для $i$-го об"єкту;     
+
+
+
+Запишемо всі наші позначення у матричному вигляді:
+
+
+$$
+y = \begin{bmatrix}
+      y_1  \\
+      y_2  \\
+      \cdots \\
+      y_i  \\
+      \cdots \\
+      y_m
+    \end{bmatrix}
+,\:\: 
+\hat{y} = \begin{bmatrix}
+      \hat{y_1}  \\
+      \hat{y_2}  \\
+      \cdots     \\
+      \hat{y_i}  \\
+      \cdots     \\
+      \hat{y_m}
+    \end{bmatrix}
+,\:\: 
+X = \begin{bmatrix}
+      x_{11} & x_{12} & \cdots & x_{1n} \\
+      x_{21} & x_{22} & \cdots & x_{2n} \\
+      \cdots & \cdots & \cdots & \cdots \\
+      x_{i1} & x_{i2} & \cdots & x_{in} \\
+      \cdots & \cdots & \cdots & \cdots \\
+      x_{m1} & x_{m2} & \cdots & x_{mn} \\
+    \end{bmatrix} = 
+    \begin{bmatrix}
+      1 & x_{12} & \cdots & x_{1n} \\
+      1 & x_{22} & \cdots & x_{2n} \\
+      \cdots & \cdots & \cdots & \cdots \\
+      1 & x_{i2} & \cdots & x_{in} \\
+      \cdots & \cdots & \cdots & \cdots \\
+      1 & x_{m2} & \cdots & x_{mn} \\
+    \end{bmatrix}
+,\:\:
+w = \begin{bmatrix}
+      {w_1}  \\
+      {w_2}  \\
+      \cdots \\
+      {w_n}
+    \end{bmatrix}
+$$
+
+
+
+
+Запишемо рівняння лінійної регресії наступним чином:
+
+
+
+
+$$y \approx \hat{y} = Xw$$
+
+
+А тепер розпишемо більш детально, що означає попереднє рівняння, використовуючи правило множення матриць:
+
+$$
+y \approx \hat{y} = \begin{bmatrix}
+      \hat{y_1}  \\
+      \hat{y_2}  \\
+      \cdots \\
+      \hat{y_i}  \\
+      \cdots \\
+      \hat{y_m}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      x_{11} & x_{12} & \cdots & x_{1n} \\
+      x_{21} & x_{22} & \cdots & x_{2n} \\
+      \cdots & \cdots & \cdots & \cdots \\
+      x_{i1} & x_{i2} & \cdots & x_{in} \\
+      \cdots & \cdots & \cdots & \cdots \\
+      x_{m1} & x_{m2} & \cdots & x_{mn} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+      {w_1}  \\
+      {w_2}  \\
+      \cdots \\
+      {w_n}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      x_{11}w_1 + x_{12}w_2 + \cdots + x_{1n}w_n \\
+      x_{21}w_1 + x_{22}w_2 + \cdots + x_{2n}w_n \\
+      \cdots     \cdots     \cdots  \cdots    \\
+      x_{i1}w_1 + x_{i2}w_2 + \cdots + x_{in}w_n \\
+      \cdots     \cdots     \cdots  \cdots    \\
+      x_{m1}w_1 + x_{m2}w_2 + \cdots + x_{mn}w_n \\
+    \end{bmatrix}
+$$
+
+
+
+Позначимо через $e_i$ похибку між цільовою змінною та прогнозними значеннями лінійної регресії на $i$-му об"єкті:
+$$e_i = y_i - \hat{y_i}$$
+
+
+Визначимо функцію втрат як суму квадратів похибок між цільовою змінною та прогнозними значеннями на всіх об"єктах вибірки:
+$$
+J(w) = \frac{1}{2m} \sum_{i = 1}^{m}e_i^2
+$$
+
+Для зручності запишемо функцію втрат у векторній формі, яка, як показано далі, еквівадентна попередньому виразу:
+$$
+J(w) = \frac{1}{2m} e^{T}e =                                     
+     = 
+  \frac{1}{2m}
+  \begin{bmatrix} e_1 & e_2 & \cdots & e_m \end{bmatrix}
+  \begin{bmatrix} e_1 \\ e_2 \\ \cdots \\ e_m \end{bmatrix}      
+    =
+    \frac{1}{2m} (e_{1}e_{1} + e_{2}e_{2} + \cdots + e_{m}e_{m})   
+    =
+  \frac{1}{2m} (e_{1}^2 + e_{2}^2 + \cdots + e_{m}^2)           
+    =
+  \frac{1}{2m}\sum_{i = 1}^{m}e_i^2
+$$
+
+
+
+Зробимо собі шпаргалку із властивостями матриць (те, що постійно забувається і необхідно весь час гуглити):
+
+
+***
+
+$(в1): (A + B)^{T} = A^{T} + B^{T}$     
+$(в2): (AB)^{T} = B^{T}A^{T}$     
+$(в3): (A^{T})^{T} = A$     
+$(в4): a^{T}b = b^{T}a$      
+$(в5): A^{-1}A = I$, де $I$ - одинична матриця   
+
+***
+
+
+
+
+Розпишемо функцію втрат наступним чином:
+
+
+$$J(w) = \frac{1}{2m} e^{T}e = \frac{1}{2m}(y - \hat{y})^{T}(y - \hat{y}) =\frac{1}{2m}(y - Xw)^{T}(y - Xw) = \\
+використаємо \; правило \; (в1) \\
+=\frac{1}{2m}(y^{\color{red}T} - (Xw)^{\color{red}T})(y - Xw) = \\
+=\frac{1}{2m}(y^{T}y - y^{T}Xw - (Xw)^{T}y + (Xw)^{T}Xw) = \\
+використаємо \; правило \; (в4) \\
+=\frac{1}{2m}(y^{T}y - \color{red}{2(Xw)^{T}y} + (Xw)^{T}Xw) = \\
+використаємо \; правило \; (в2) \\
+=\frac{1}{2m}(y^{T}y - 2w^{\color{red}T}X^{\color{red}T}y + w^{\color{red}T}X^{\color{red}T}Xw)$$
+
+Отже, функція втрат у матричній формі має наступний вигляд:
+
+$$J(w) = \frac{1}{2m}(y^{T}y - 2w^{T}X^{T}y + w^{T}X^{T}Xw)$$
+
+
+Щоб знайти параметри моделі $w$ необхідно взяти похідку від функції втрат $J(w)$ по вказаним параметрам, прирівняти її до нуля і розв"язати отримане рівняння відносно $w$.
+
+
+
+Зробимо собі ще одну  шпаргалку із правилами диференціювання матриць:
+
+
+***
+
+$(п1) : \frac{\partial}{\partial a}a^{T}b = b$      
+$(п2) : \frac{\partial}{\partial a}a^{T}Ba = (B + B^{T})a$      
+
+***
+
+Вызьмемо похідну від функції втрат по параметрам моделі:
+
+$$
+\frac{\partial J(w)}{\partial w} = 
+\frac{\partial}{\partial w}[\frac{1}{2m}(y^{T}y - 2w^{T}X^{T}y + w^{T}X^{T}Xw)] = 
+\frac{1}{2m}[\frac{\partial}{\partial w}(y^{T}y) - 2\frac{\partial}{\partial w}(w^{T}X^{T}y) + \frac{\partial}{\partial w}(w^{T}X^{T}Xw)]
+$$
+
+
+
+Розглянемо кожну похідну окремо:
+
+$$\frac{\partial}{\partial w}(y^{T}y) = 0$$
+
+Згідно правила (п1) маємо ($X^{T}y$ - вектор стовбець):     
+$$\frac{\partial}{\partial w}(w^{T}X^{T}y) = X^{T}y$$
+
+Згідно правила (п2) маємо (нехай $X^{T}X$ - $B$): 
+
+$$\frac{\partial}{\partial w}(w^{T}X^{T}Xw) = (X^{T}X + (X^{T}X)^{T})w = 
+згідно \; правила \; (в2) 
+= (X^{T}X + X^{\color{red}T}(X^{T})^{\color{red}T})w =
+згідно \; правила \; (в3) 
+= (X^{T}X + X^{T}X)w = 2X^{T}Xw
+$$
+
+
+
+Отже: 
+$$\frac{\partial J(w)}{\partial w} = \frac{1}{2m}(0 - 2X^{T}y + 2X^{T}Xw) = \frac{1}{m}(X^{T}Xw - X^{T}y)$$
+
+
+Для тогоб щоб знайти значення $w$, прирівняємо похідну до нуля:
+
+$$\frac{1}{m}(X^{T}Xw - X^{T}y) = 0$$
+$$X^{T}Xw - X^{T}y = 0$$
+
+$$X^{T}Xw = X^{T}y$$
+
+Використаємо правило (в5) і домножимо ліву і праву частину рівняння на $(X^{T}X)^{-1}$:
+$$\color{red}{(X^{T}X)^{-1}}X^{T}Xw = \color{red}{(X^{T}X)^{-1}}X^{T}y$$
+
+
+Звідси маємо значення параметрів моделі:
+
+$$w = (X^{T}X)^{-1}X^{T}y$$
+
+
+
+
+## Градієнтний спуск
+
+Оскільки ось це $(X^{T}X)^{-1}X^{T}$ рахувати дуже затратно, особливо на великих даних, для отримання параметрів моделі можна використати алгоритм градієнтного спуску. Градієнт функції - це вектор із часткових похідних по її параметрах:
+$$\bigtriangledown_{w} J(w) = 
+\begin{bmatrix}
+  \frac{\partial J(w)}{\partial w_1} \\
+  \frac{\partial J(w)}{\partial w_2} \\
+  \cdots                             \\
+  \frac{\partial J(w)}{\partial w_n}
+\end{bmatrix}
+$$
+
+Нам може допомогти властивість градієнта, яка говорить, що він вказує напрямок, в якому зростає функція. А нам необхідно знайти напрямок, в якому функція зменшується. Для цього поставимо знак мінус перед градієнтом (антиградієнт).
+
+Формула розрахунку параметрів моделі буде мати наступний вигляд:
+
+***Повторювати:***
+$$w_{t} = w_{t-1} - \alpha \bigtriangledown_{w} J(w)$$
+***Поки не зійдеться***     
+де $t$ номер ітерації алгоритму,  $\alpha$ - "швидкість" навчання.
+
+
+Розпишемо формулу:
+
+$$w_{t} = w_{t-1} - \alpha  \frac{\partial J(w)}{\partial w}$$
+
+Похідну функції втрат по параметрах ми вже рахували вище:
+
+$$w_{t} = w_{t-1} - \alpha \frac{1}{m}(X^{T}Xw - X^{T}y)$$
+
+Винесемо $X^{T}$за дужки:
+
+$$w_{t} = w_{t-1} - \alpha \frac{1}{m}(X^{T}(Xw - y))$$
+
+
+
+
+## Всякі різні експерименти
+
+Перейдемо до більш цікавого і спробуємо трішки попрацювати із формулами, які описувались вище, і даними.
+
+
+```{r}
+# завантажимо бібліотеки, які нам пригодяться
+library(dplyr)           # для маніпуляції із даними
+library(tidyr)           # для маніпуляції із даними
+library(tibble)          # для маніпуляції із даними
+library(purrr)           # для функціонального програмування
+library(ggplot2)         # для гарних графіків
+library(AmesHousing)     # тут лежать дані, які ми будемо використовувати
+library(recipes)         # для всяких перетворень над даними
+library(gganimate)       # для анімацій
+library(broom)           # для акуратної роботи із вихідними результатами моделей
+library(gt)              # для гарних табличок
+```
+
+
+
+Завантажимо дані по цінах на квартири:
+
+
+
+```{r}
+df <- AmesHousing::make_ames() %>% 
+  as_tibble()
+
+# df
+```
+
+
+
+
+Для подальшої роботи використаємо як цільову змінну **Sale_Price**, а як залежну - **Lot_Area**. Для зручності перейменуємо їх як *target* = *Sale_Price*, *area* = *Lot_Area* і прологарифмуємо їх, щоб лінійна залежність між змінними була більш виражена:
+
+
+```{r}
+df_model <- 
+  df %>% 
+  select(target = Sale_Price, area = Lot_Area) %>% 
+  mutate_all(log)
+
+# df_model
+```
+
+
+
+Подивимось на залежність ціни квартили від площі:
+
+```{r, fig.width=10}
+p <- 
+  ggplot(df_model, aes(x = area, y = target)) +
+  geom_point(alpha = 0.25, col = "steelblue", size = 2) +
+  geom_smooth(se = FALSE, method = "lm", formula = y ~ x, col = "red4") + 
+  theme_minimal() +
+  theme(panel.grid = element_blank())
+
+p
+```
+
+
+Зробимо певні перетворення над змінною *area*: створимо *"рецепт"* (можна було б і більш простішим способом це зробити), щоб змінна мала більш стабільний розкид даних.
+
+
+```{r}
+# створюємо рецепт
+rec <- 
+  recipe(
+    target ~ area, 
+    data = df_model
+  ) %>% 
+  step_center(area) %>%    # відняти середнє
+  step_scale(area) %>%     # поділити на середньоквадратичне відхилення
+  prep(retain = TRUE)
+
+# отримуємо перетворені дані із рецепту
+df_model <- juice(rec)
+
+df_model
+
+```
+
+
+Сформуємо вектор цільової змінної $y$ і матрицю змінних $X$, не забувши, звісно, додати стовбець із одиниць:
+
+
+```{r}
+Y <- 
+  df_model %>% 
+  select(target) %>% 
+  as.matrix()
+
+dim(Y); head(Y)
+```
+
+```{r}
+X <-
+  df_model %>% 
+  select(area) %>% 
+  add_column(intercept = 1, .before = "area") %>% 
+  as.matrix()
+
+dim(X); head(X)
+```
+
+
+
+
+Створимо модель лінійної регресії стандартними засобами за допомогою функції *lm()* та подивимось на її коефіцієнти:
+
+```{r}
+model_lm <- lm(target ~ area, data = df_model)
+
+broom::tidy(model_lm) %>% 
+  select(term, estimate) %>% 
+  gt::gt()
+  
+
+```
+
+
+
+Тепер отримаємо коефіцієнти лінійної рейгресії за допомогою раніше виведеної формули $w = (X^{T}X)^{-1}X^{T}y$:
+
+```{r}
+# напишемо функцію отримання w
+get_linear_coef <- 
+  function(
+    x,   # матриця змінних
+    y    # вектор цільової змінної
+  ) {
+    
+    # solve() - отримати обернену матрицю
+    # t()     - отримати транспоновану матрицю
+
+    result <- solve(t(x) %*% x) %*% t(X) %*% y
+    
+    colnames(result) <- NULL
+    return(result)
+  }
+
+# запускаємо функцію і бачимо, що ніби все зійшлося
+coef <- get_linear_coef(x = X, y = Y)
+
+coef %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "term") %>% 
+  rename(estimate = V1) %>% 
+  gt::gt()
+
+
+```
+
+
+Напишемо функцію для отримання прогнозних значень $\hat{y}$;
+
+```{r}
+get_linear_pred <-
+  function(
+    x,
+    coef
+  ) {
+    
+    result <- x %*% coef
+    
+    return(result)
+    
+  }
+
+
+```
+
+
+
+Зробимо прогноз значень за допомогою стандартної моделі:
+```{r}
+
+bind_cols(
+  tibble('Стандартна модель' = predict(model_lm, df_model)),
+  get_linear_pred(x = X, coef = coef) %>% 
+  as_tibble() %>% 
+  rename('По формулі' = V1)
+) %>% 
+    slice(1:5) %>% 
+    gt::gt()
+
+  
+```
+
+
+
+Як показано, ніби сходиться.
+
+
+
+
+Напишемо функцію для обчислення функції втрат $J(w) = \frac{1}{2m} e^{T}e$:
+
+
+```{r}
+cost_func <- 
+  function(
+    x,     # матриця із значеннями змінних
+    y,     # вектор стовбець цільової змінної
+    coef   # вектор стовбець коефіцієнтів моделі
+  ) {
+    
+    m <- nrow(x)
+    e <- y - x %*% coef
+    
+    result <- (1 / (2 * m)) * (t(e) %*% e)
+    
+    return(result)
+    
+  }
+```
+
+
+Напишемо функцію для обчислення градієнта функції втрат по параметрам моделі $\bigtriangledown_{w}J(w) = \frac{1}{m}(X^{T}(Xw - y))$ 
+
+
+```{r}
+gradient <- 
+  function(
+    x,
+    y,
+    coef
+  ) {
+    m <- nrow(x)
+    
+    result <- (1 / m) * (t(x) %*% (x %*% coef - y))
+    
+    return(result)
+  }
+```
+
+
+
+Нарешті, напишемо функцію для обчислення коефіцієнтів моделі градієнтним спуском:
+
+```{r}
+
+get_linear_coef_grad <- 
+  function(
+    x,
+    y,
+    coef,
+    count_iter = 100,
+    alpha = 0.1
+  ) {
+    
+    coef_list <- vector(mode = "list", length = count_iter)
+    cost_list <- vector(mode = "list", length = count_iter)
+
+    for (iter in 1:count_iter) {
+      # оновлюємо параметри моделі
+      coef <- coef - alpha * gradient(x = x, y = y, coef = coef)
+      # обчислюємо функцію втрат для оновлених параметрів моделі
+      cost <- cost_func(x = x, y = y, coef = coef)
+      
+      # збережемо все
+      coef_list[[iter]] <- coef
+      cost_list[[iter]] <- cost
+
+    }
+    
+    cost_list <- map_dfr(
+      .x = cost_list,
+      .f = ~tibble(cost = .x)
+    )
+    
+    coef_list <- map_dfr(
+      .x = coef_list,
+      .f = ~{
+        .x %>% t() %>% as_tibble()
+      }
+    ) %>% 
+      rename_all(funs(paste0("w_", 1:nrow(coef))))
+    
+    # буде повертатись табличка із значеннями функції втрат і значеннями параметрів моделі на кожній ітерації
+    result <- bind_cols(
+      tibble(iteration = 1:count_iter),
+      cost_list,
+      coef_list
+    )
+    
+    return(result)
+    
+  }
+
+```
+
+
+Отже, маючи всі необхідні інструменти прогонимо градієнтний спуск.
+
+Спочатку ініціалізуємо параметри моделі:
+
+```{r}
+w <- matrix(data = -20, nrow = 2, ncol = 1)
+
+w
+```
+
+
+Запустимо градієнтний спуск на 100-а ітераціях із швидкістю навчання 0.1:
+
+```{r}
+iter_for_model <- 100
+learning_rate <- 0.1
+
+coef_grad <- get_linear_coef_grad(
+  x = X,
+  y = Y,
+  coef = w,
+  count_iter = iter_for_model,
+  alpha = learning_rate
+)
+
+coef_grad
+```
+
+
+
+
+
+Відразу подивимось на коеціфієнти моделі на останній ітерації:
+
+
+```{r}
+coef_grad %>% 
+  filter(iteration == iter_for_model) %>% 
+  select(starts_with("w_")) %>% 
+  gt::gt()
+```
+
+
+Здається отримали щось схоже на попередні значення.
+
+
+Подивимось на графік зміни функції втрат в залежності від ітерації:
+
+```{r, fig.width=10}
+plot_cost <- coef_grad %>% 
+  ggplot(aes(x = iteration, y = cost, col = cost)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_color_distiller(palette = "Spectral") +
+  theme_minimal() +
+  theme(panel.grid = element_blank())
+
+plot_cost
+```
+
+
+
+Можна також подивитись як "рухались" параметри моделі до мінімуму функції втрат.
+
+Створимо спочатку сітку із параметрів, для яких обчислимо функцію втрат:
+
+
+
+
+```{r}
+# 
+coef_grid <- 
+  expand.grid(
+    w_1 = seq(-25, 25, length.out = 100), 
+    w_2 = seq(-25, 25, length.out = 100)
+  )%>% 
+  as_tibble() %>% 
+  mutate(rownumb = row_number()) %>% 
+  group_by(rownumb) %>% 
+  nest() %>% 
+  mutate(
+    cost = map(
+      .x = data,
+      .f = ~{
+        coef <- matrix(c(.x$w_1, .x$w_2), nrow = 2, ncol = 1)
+        cost_func(x = X, y = Y, coef = coef)
+      }
+    )
+  ) %>% 
+  unnest()
+
+coef_grid %>% 
+  slice(1:5) %>% 
+  gt::gt()
+```
+
+
+Тепер побудуємо графік руху коефіцієнтів до мінімуму функції втрат:
+
+```{r, fig.width=10}
+plot_cost_coef <- 
+  ggplot() + 
+  geom_contour(
+    data = coef_grid,
+    aes(x = w_1, y = w_2, z = cost, colour = ..level..)
+  ) + 
+  geom_point(
+    data = coef_grad,
+    aes(x = w_1, y = w_2, colour = cost),
+    size = 2, alpha = 0.7
+  ) +
+  scale_color_distiller(palette = "Spectral") +
+  theme_minimal() +
+  theme(panel.grid = element_blank())
+
+plot_cost_coef
+```
+
+
+
+Ось так ми і добрались до мінімуму функції втрат :)
+
+
+Подивимось як змінювалась лінія регресії по ітераціях
+
+```{r}
+# зробимо прогнози для параметрів моделі 
+coef_grad_pred <- coef_grad %>% 
+  filter(iteration %in% seq(20, 100, 5))%>% 
+  select(iteration, w_1, w_2) %>% 
+  group_by(iteration) %>% 
+  nest() %>% 
+  mutate(
+    pred = map(
+      .x = data,
+      .f = ~{
+        coef <- matrix(c(.x$w_1, .x$w_2), nrow = 2, ncol = 1)
+        tibble(pred = as.vector(X %*% coef))
+      }
+    )
+  ) %>% 
+  select(iteration, pred) %>% 
+  unnest()
+
+# додамо реальні значення цільової змінної та предиктора
+coef_grad_pred$target <- df_model$target
+coef_grad_pred$area <- df_model$area
+# glimpse(coef_grad_pred)
+
+coef_grad_pred %>% 
+  ggplot() + 
+  geom_point(aes(x = area, y = target), alpha=  0.2) +
+  geom_line(aes(x = area, y = pred), col = "red4", size = 0.5) +
+  geom_smooth(aes(x = area, y = target), method = "lm", se = F, size = 0.5, col = "blue4") +
+  scale_x_continuous(limits = c(-4, 7)) + 
+  scale_y_continuous(limits = c(9, 14)) + 
+  theme_minimal() +
+  theme(panel.grid = element_blank()) +
+  gganimate::transition_states(states = iteration) +
+  ggtitle("Ітерація --> {closest_state}")
+```
+
+
+
+
+
+А можна ще подивитись як впливає швидкість навчання на функцію втрат:
+
+```{r, fig.width=10}
+# задамо сітку швидкості навчання і обчислимо параметри моделі
+learning_rate_grid <- map_dfr(
+  .x = c(0.1, 0.05, 0.01),
+  .f = ~{
+    get_linear_coef_grad(
+      x = X,
+      y = Y,
+      coef = w,
+      count_iter = iter_for_model,
+      alpha = .x   # тут будуть змінюватись значення
+    ) %>% 
+      mutate(learning_rate = .x)
+  }
+)
+
+# намалюєио гарний графік
+plot_alpha <- 
+  ggplot(
+    data = learning_rate_grid, 
+    aes(x = iteration, y = cost, color = factor(learning_rate))
+  ) +
+  geom_line(size = 1) +
+  scale_color_manual(values = c("red4", "green4", "blue4")) +
+  labs(color = "learning_rate") +
+  theme_minimal() +
+  theme(panel.grid = element_blank())
+
+plot_alpha
+
+```
+
+
+Як видно, чим менша швидкість, тим повільніше навчаємось.
